@@ -1,12 +1,19 @@
+const Product = require('../models/product')
 
-// http://localhost:3000/api/v1/products/static
 const getAllProductsStatic = async (req, res) => {
-  throw new Error('Dynamic error')
-  res.status(200).json({ msg: 'all products' })
+  const products = await Product.find({ featured: true })
+  res.status(200).json({ products, nbHits: products.length })
 }
 
 const getAllProducts = async (req, res) => {
-  res.status(200).json({ msg: 'actual products' })
+  const { featured } = req.query;
+
+  const queryObject = {};
+  if (featured) {
+    queryObject.featured = featured === 'true' ? true : false
+  }
+  const products = await Product.find(queryObject)
+  res.status(200).json({ products, nbHits: products.length })
 }
 
 module.exports = {
